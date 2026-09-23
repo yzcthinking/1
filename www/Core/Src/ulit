@@ -1,0 +1,12 @@
+# 利用opencv 库函数，从摄像头采集一帧图像
+cap = cv2.VideoCapture(0)
+ret, cv_image = cap.read()
+
+# 对图像进行裁剪
+height, width, channels = cv_image.shape
+descentre = 50
+rows_to_watch = 100
+crop_img = cv_image[(height)/4 + descentre:(height)/4 + (descentre+rows_to_watch)][1:width]
+
+#将图像从RGB转换成HSV色彩空间
+hsv = cv2.cvtColor(crop_img,cv2.COLOR_RGB2HSV)

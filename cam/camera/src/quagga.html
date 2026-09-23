@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ESP32-CAM 条码扫描</title>
+  <script src="https://cdn.jsdelivr.net/npm/@ericblade/quagga2@1.8.4/dist/quagga.min.js"></script>
+  <style>
+    body { margin: 0; background: #111; color: #eee; font: 16px sans-serif; }
+    main { max-width: 960px; margin: 0 auto; padding: 16px; }
+    #stream { display: block; width: 100%; height: auto; background: #222; }
+    #snapshot { display: none; }
+    #result { padding: 12px 0; color: #8fd3ff; word-break: break-all; }
+    a { color: #8fd3ff; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ESP32-CAM 条码扫描</h1>
+    <img id="stream" src="/mjpeg/1" alt="ESP32-CAM 视频流">
+    <canvas id="snapshot"></canvas>
+    <div id="result">正在等待条码...</div>
+    <a href="/">返回视频首页</a>
+  </main>
+  <script>
+    const stream = document.getElementById('stream');
+    const canvas = document.getElementById('snapshot');
+    const resultText = document.getElementById('result');
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    let decoding = false;
+    let lastCode = '';
+
+    function scanFrame() {
+      if (decoding || !stream.naturalWidth || !window.Quagga) return;
+      canvas.width = stream.naturalWidth;
+      canvas.height = stream.naturalHeight;
+      context.drawImage(stream, 0, 0, canvas.width, canvas.height);
+      decoding = true;
+      Quagga.decodeSingle({
+        src: canvas.toDataURL('image/jpeg', 0.85),
+        inputStream: { size: Math.min(canvas.width, 800), singleChannel: false },
+        locator: { patchSize: 'medium', halfSample: true },
+        locate: true,
+        decoder: { readers: ['code_128_reader', 'ean_reader', 'ean_8_reader', 'upc_reader'] }
+      }, function (scanResult) {
+        decoding = false;
+        const code = scanResult && scanResult.codeResult && scanResult.codeResult.code;
+        if (code && code !== lastCode) {
+          lastCode = code;
+          resultText.textContent = '扫描结果: ' + code;
+        }
+      });
+    }
+
+    setInterval(scanFrame, 500);
+  </script>
+</body>
+</html>

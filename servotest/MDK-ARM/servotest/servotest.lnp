@@ -1,0 +1,27 @@
+--cpu=Cortex-M4.fp.sp
+"servotest\startup_stm32f407xx.o"
+"servotest\main.o"
+"servotest\stm32f4xx_it.o"
+"servotest\stm32f4xx_hal_msp.o"
+"servotest\servo.o"
+"servotest\move.o"
+"servotest\stm32f4xx_hal_tim.o"
+"servotest\stm32f4xx_hal_tim_ex.o"
+"servotest\stm32f4xx_hal_rcc.o"
+"servotest\stm32f4xx_hal_rcc_ex.o"
+"servotest\stm32f4xx_hal_flash.o"
+"servotest\stm32f4xx_hal_flash_ex.o"
+"servotest\stm32f4xx_hal_flash_ramfunc.o"
+"servotest\stm32f4xx_hal_gpio.o"
+"servotest\stm32f4xx_hal_dma_ex.o"
+"servotest\stm32f4xx_hal_dma.o"
+"servotest\stm32f4xx_hal_pwr.o"
+"servotest\stm32f4xx_hal_pwr_ex.o"
+"servotest\stm32f4xx_hal_cortex.o"
+"servotest\stm32f4xx_hal.o"
+"servotest\stm32f4xx_hal_exti.o"
+"servotest\system_stm32f4xx.o"
+--strict --scatter "servotest\servotest.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "servotest.map" -o servotest\servotest.axf
